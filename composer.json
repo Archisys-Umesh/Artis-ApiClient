@@ -16,7 +16,7 @@
     },
     "autoload": {
             "psr-4": {
-                    "Archisys\\Ecom\\ArtisClients\\": "src/"                                    
+                    "Archisys\\Ecom\\": "src/ArtisClients"                                    
             }
     }
 }
