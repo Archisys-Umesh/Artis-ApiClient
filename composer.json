@@ -1,0 +1,22 @@
+{
+    "name": "archisys/artis-ecom",
+    "description": "My first Composer project",
+    "keywords": ["Archisys", "Artis","Stallion Archisys Ltd"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Umesh",
+            "email": "umesh.chhatrala@archisys.in"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.2.0"
+    },
+    "autoload": {
+            "psr-4": {
+                    "Archisys\\Ecom\\": "src/"                                    
+            }
+    }
+}
