@@ -5,7 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Archisys\Ecom\ArtisClients\Authentication;
+namespace Archisys\Ecom\Authentication;
 /**
  * Description of Auth
  *
