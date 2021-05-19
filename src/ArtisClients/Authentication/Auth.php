@@ -7,7 +7,7 @@
  */
 namespace Archisys\Ecom\Authentication;
 
-//require_once __DIR__ . '../../src/configuration.php';
+require_once __DIR__ . '/../../../src/configuration.php';
 
 use Firebase\JWT\JWT;
 use Ramsey\Uuid\Uuid;
@@ -32,6 +32,7 @@ class Auth {
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($curl);
         curl_close($curl);
+        
         return $response;
     }
     
@@ -45,7 +46,7 @@ class Auth {
             'exp' => $expire,
             'appversion' => "1.0.0",
             'appversioncode' => "1",
-            'aud' => ["com.archisys.artis"],
+            'aud' => ["com.archisys".'.'._aud],
             'id' => Uuid::uuid4(),
             'iss' => "com.archisys.artis",
             'manufacturer' => "Archisys",
@@ -68,21 +69,33 @@ class Auth {
     
     public static function appFirstStart($jwtDeviceToken) {
         
-        $url = 'http://artis.biotech.archisys.biz/Api/AppFirstStart';
+        $url = _url.'/'.'Api/AppFirstStart';
         $headerToken = $jwtDeviceToken;
+       
         
-        $appFirstStartResponse = $this->httpPost($url, $data, $headerToken);
-
-        return $appFirstStartResponse;
+        $headers = array(
+            "Device: $headerToken",
+        );
+        
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_HEADER, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        $response = curl_exec($curl);
+        curl_close($curl);
+        
+        return $response;
     }
     
-    public function createNewUser(){
+    public static function createNewUser(){
         
         
-        $jwtToken = $this->createJwtToken();
+        $jwtToken = self::createJwtToken();
         
-        $appFirstStart = $this->appFirstStart($jwtToken);
+        $appFirstStart = self::appFirstStart($jwtToken);
         
-        return $appFirstStart;
+        return $appFirstStart['Result'];
     }
 }
