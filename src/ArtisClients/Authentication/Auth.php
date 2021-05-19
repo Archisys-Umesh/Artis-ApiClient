@@ -7,7 +7,6 @@
  */
 namespace Archisys\Ecom\Authentication;
 
-require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/src/settings.php';
 
 use Firebase\JWT\JWT;
