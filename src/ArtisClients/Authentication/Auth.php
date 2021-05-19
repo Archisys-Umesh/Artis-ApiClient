@@ -19,6 +19,23 @@ use Ramsey\Uuid\Uuid;
  */
 class Auth {
     
+    public static function httpPost($url, $data, $headerToken){
+        
+        $headers = array(
+            "Accept: application/json",
+            "Device: Bearer {'$headerToken'}",
+        );
+        
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return $response;
+    }
+    
     public static function createJwtToken(){
         
         $issuedAt = time();
@@ -51,28 +68,14 @@ class Auth {
     }
     
     public static function appFirstStart($jwtDeviceToken) {
-
-        $appFirstStartResponse = Http::withHeaders(['Device' => $jwtDeviceToken])
-                ->post('http://artis.biotech.archisys.biz/Api/AppFirstStart');
+        
+        $url = 'http://artis.biotech.archisys.biz/Api/AppFirstStart';
+        $headerToken = $jwtDeviceToken;
+        
+        $appFirstStartResponse = $this->httpPost($url, $data, $headerToken);
 
         return $appFirstStartResponse;
     }
     
-    function httpPost($url, $data, $headerToken){
-        
-        $headers = array(
-            "Accept: application/json",
-            "Device: Bearer {token}",
-        );
-        
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_HEADER, false);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($curl);
-        curl_close($curl);
-        return $response;
-    }
+    
 }
