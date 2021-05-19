@@ -76,7 +76,8 @@ class Auth {
         return $appFirstStartResponse;
     }
     
-    public static function createNewUser(){
+    public function createNewUser(){
+        
         
         $jwtToken = $this->createJwtToken();
         
