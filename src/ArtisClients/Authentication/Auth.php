@@ -77,5 +77,12 @@ class Auth {
         return $appFirstStartResponse;
     }
     
-    
+    public static function createNewUser(){
+        
+        $jwtToken = $this->createJwtToken();
+        
+        $appFirstStart = $this->appFirstStart($jwtToken);
+        
+        return $appFirstStart;
+    }
 }
