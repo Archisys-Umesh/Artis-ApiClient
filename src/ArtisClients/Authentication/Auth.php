@@ -18,24 +18,6 @@ use Ramsey\Uuid\Uuid;
  */
 class Auth {
     
-    public static function httpPost($url, $data, $headerToken){
-        
-        $headers = array(
-            "Accept: application/json",
-            "Device: Bearer {'$headerToken'}",
-        );
-        
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($curl);
-        curl_close($curl);
-        
-        return $response;
-    }
-    
     public static function createJwtToken(){
         
         $issuedAt = time();
@@ -79,23 +61,85 @@ class Auth {
         
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_HEADER, true);
+        curl_setopt($curl, CURLOPT_HEADER, false);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($curl);
         curl_close($curl);
-        
+       
         return $response;
     }
     
-    public static function createNewUser(){
-        
+    public static function registerWithUserDetail($name,$email,$isdCode,$mobile,$sapNo){
         
         $jwtToken = self::createJwtToken();
-        
         $appFirstStart = self::appFirstStart($jwtToken);
+        $getResult = explode("Result", $appFirstStart);
+        $getToken = explode("Token", $getResult[1]);
+        $authenticationToken = str_replace(array('}', ':', '"' ), array('', '', ''), $getToken[1]);
         
-        return $appFirstStart['Result'];
+        $validateEmailMobile = self::validateEmailMobile($jwtToken,$authenticationToken,$email,$isdCode,$mobile,$sapNo);
+        
+        $url = _url.'/'.'Api/RegisterWithUserDetail';
+        $headers = array(
+            "Device: $jwtToken",
+            "Authorization: 'Bearer '$authenticationToken",
+        );
+        
+        $appUserDetais = array(
+            'name' => $name,
+            'email' => $email,
+            'isdCode' => $isdCode,
+            'mobile' => $mobile,
+            'userName' => '',
+            'password' => 'Archisys@123',
+            'confirmPassword' => 'Archisys@123',
+            'code' => $sapNo,
+            'referralCode' => ''
+        );
+        
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($appUserDetais));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($curl);
+        curl_close($curl);
+       
+        return $response;
+    }
+    
+    public static function validateEmailMobile($deviceToken,$authorizationToken, $email, $isdCode, $mobile) {
+        
+       
+        $url = _url.'/'.'Api/RegisterWithUserDetail';
+        $headers = array(
+            "Device: $deviceToken",
+            "Authorization: 'Bearer '$authorizationToken",
+        );
+        
+        $appUserEmailMobile= array(
+            'email' => $email,
+            'isdCode' => $isdCode,
+            'mobile' => $mobile
+        );
+        
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($appUserEmailMobile));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($curl);
+        curl_close($curl);
+       
+        return $response;
     }
 }
