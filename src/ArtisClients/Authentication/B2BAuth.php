@@ -16,8 +16,23 @@ use Ramsey\Uuid\Uuid;
  *
  * @author Uday
  */
-class Auth {
+class B2BAuth {
     
+    public static function index($name,$email,$isdCode,$mobile,$sapNo){
+        
+        $jwtToken = self::createJwtToken();
+        $appFirstStart = self::appFirstStart($jwtToken);
+        
+        $getResult = explode("Result", $appFirstStart);
+        $getToken = explode("Token", $getResult[1]);
+        $authenticationToken = str_replace(array('}', ':', '"' ), array('', '', ''), $getToken[1]);
+        
+        $registerWithUserDetail = self::registerWithUserDetail($jwtToken,$authenticationToken,$name,$email,$isdCode,$mobile,$sapNo);
+        
+        $validateEmailMobile = self::validateEmailMobile($jwtToken,$authenticationToken,$email, $isdCode, $mobile);
+    }
+
+
     public static function createJwtToken(){
         
         $issuedAt = time();
@@ -72,15 +87,7 @@ class Auth {
         return $response;
     }
     
-    public static function registerWithUserDetail($name,$email,$isdCode,$mobile,$sapNo){
-        
-        $jwtToken = self::createJwtToken();
-        $appFirstStart = self::appFirstStart($jwtToken);
-        $getResult = explode("Result", $appFirstStart);
-        $getToken = explode("Token", $getResult[1]);
-        $authenticationToken = str_replace(array('}', ':', '"' ), array('', '', ''), $getToken[1]);
-        
-        $validateEmailMobile = self::validateEmailMobile($jwtToken,$authenticationToken,$email,$isdCode,$mobile,$sapNo);
+    public static function registerWithUserDetail($jwtToken,$authenticationToken,$name,$email,$isdCode,$mobile,$sapNo){
         
         $url = _url.'/'.'Api/RegisterWithUserDetail';
         $headers = array(
@@ -114,13 +121,13 @@ class Auth {
         return $response;
     }
     
-    public static function validateEmailMobile($deviceToken,$authorizationToken, $email, $isdCode, $mobile) {
+    public static function validateEmailMobile($jwtToken,$authenticationToken,$email, $isdCode, $mobile) {
         
        
         $url = _url.'/'.'Api/RegisterWithUserDetail';
         $headers = array(
-            "Device: $deviceToken",
-            "Authorization: 'Bearer '$authorizationToken",
+            "Device: $jwtToken",
+            "Authorization: 'Bearer '$authenticationToken",
         );
         
         $appUserEmailMobile= array(
@@ -134,6 +141,33 @@ class Auth {
         curl_setopt($curl, CURLOPT_HEADER, false);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($appUserEmailMobile));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($curl);
+        curl_close($curl);
+       
+        return $response;
+    }
+    
+    public static function loginWithEmailPassword($jwtToken, $authenticationToken, $email, $password){
+        
+        $url = _url.'/'.'Api/LoginPlus';
+        $headers = array(
+            "Device: $jwtToken",
+            "Authorization: 'Bearer '$authenticationToken",
+        );
+        
+        $loginEmailPassword = array(
+            'email' => $email,
+            'password' => $password
+        );
+        
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($loginEmailPassword));
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
