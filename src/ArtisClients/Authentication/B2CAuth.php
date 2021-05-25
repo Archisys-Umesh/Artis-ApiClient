@@ -20,7 +20,7 @@ use Ramsey\Uuid\Uuid;
  */
 class B2CAuth {
     
-    public static function index($name,$email,$isdCode,$mobile,$sapNo){
+    public static function index($isdCode,$mobile){
         
         $jwtToken = self::createJwtToken();
         $appFirstStart = self::appFirstStart($jwtToken);
@@ -29,9 +29,10 @@ class B2CAuth {
         $getToken = explode("Token", $getResult[1]);
         $authenticationToken = str_replace(array('}', ':', '"' ), array('', '', ''), $getToken[1]);
         
-        $registerWithUserDetail = self::registerWithUserDetail($jwtToken,$authenticationToken,$name,$email,$isdCode,$mobile,$sapNo);
+        $loginWithOTP = self::loginOtpValidate($jwtToken,$authenticationToken,$isdCode,$mobile,'152535');
+        //$registerWithUserDetail = self::registerWithUserDetail($jwtToken,$authenticationToken,$name,$email,$isdCode,$mobile,$sapNo);
         
-        $validateEmailMobile = self::validateEmailMobile($jwtToken,$authenticationToken,$email, $isdCode, $mobile);
+        //$validateEmailMobile = self::validateEmailMobile($jwtToken,$authenticationToken,$email, $isdCode, $mobile);
     }
     
     public static function createJwtToken(){
@@ -93,7 +94,7 @@ class B2CAuth {
         $url = _url.'/'.'Api/RegisterWithUserDetail';
         $headers = array(
             "Device: $jwtToken",
-            "Authorization: 'Bearer '$authenticationToken",
+            "Authorization: Bearer $authenticationToken",
         );
         
         $appUserDetais = array(
@@ -128,7 +129,7 @@ class B2CAuth {
         $url = _url.'/'.'Api/RegisterWithUserDetail';
         $headers = array(
             "Device: $jwtToken",
-            "Authorization: 'Bearer '$authenticationToken",
+            "Authorization: Bearer $authenticationToken",
         );
         
         $appUserEmailMobile= array(
@@ -156,14 +157,14 @@ class B2CAuth {
         $url = _url.'/'.'Api/Login';
         $headers = array(
             "Device: $jwtToken",
-            "Authorization: 'Bearer '$authenticationToken",
+            "Authorization: Bearer $authenticationToken",
         );
         
         $loginEmailPassword = array(
             'isdCode' => $isdCode,
             'mobile' => $mobile
         );
-        
+       
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_HEADER, false);
@@ -174,7 +175,35 @@ class B2CAuth {
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($curl);
         curl_close($curl);
-       var_dump($response);exit;
+        
+        return $response;
+    }
+    
+    public static function loginOtpValidate($jwtToken, $authenticationToken, $isdCode, $mobile, $otp){
+        
+        $url = _url.'/'.'Api/Validate';
+        $headers = array(
+            "Device: $jwtToken",
+            "Authorization: Bearer $authenticationToken",
+        );
+        
+        $loginWithOTP = array(
+            'isdCode' => $isdCode,
+            'mobile' => $mobile,
+            'code' => $otp
+        );
+       
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($loginWithOTP));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($curl);
+        curl_close($curl);
+        
         return $response;
     }
 }
