@@ -1,6 +1,6 @@
 {
     "name": "archisys/artis-api-client",
-    "description": "My first Composer project",
+    "description": "Artis Api Client project",
     "keywords": ["Archisys", "Artis","Stallion Archisys Ltd"],
     "type": "library",
     "license": "MIT",
@@ -18,7 +18,7 @@
     },
     "autoload": {
             "psr-4": {
-                    "Archisys\\Ecom\\": "src/ArtisClients"                                    
+                    "Archisys\\ArtisApiClient\\": "src/ArtisClients"                                    
             }
     }
 }

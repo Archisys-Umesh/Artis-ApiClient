@@ -7,7 +7,6 @@
  */
 namespace Archisys\Ecom\Authentication;
 
-require_once __DIR__ . '/../../../src/configuration.php';
 
 use Firebase\JWT\JWT;
 use Ramsey\Uuid\Uuid;
