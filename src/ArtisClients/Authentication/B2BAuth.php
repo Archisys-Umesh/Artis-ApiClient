@@ -67,11 +67,9 @@ class B2BAuth {
     public static function appFirstStart($jwtDeviceToken) {
         
         $url = _url.'/'.'Api/AppFirstStart';
-        $headerToken = $jwtDeviceToken;
-       
         
         $headers = array(
-            "Device: $headerToken",
+            'Device' => "Device:".$jwtDeviceToken
         );
         
         $curl = curl_init($url);
@@ -82,6 +80,7 @@ class B2BAuth {
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($curl);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
        
         return $response;
@@ -91,8 +90,8 @@ class B2BAuth {
         
         $url = _url.'/'.'Api/RegisterWithUserDetail';
         $headers = array(
-            "Device: $jwtToken",
-            "Authorization: 'Bearer '$authenticationToken",
+            'Device' => "Device:".$jwtToken,
+            'Authorization' => "Authorization: Bearer ".$authenticationToken
         );
         
         $appUserDetais = array(
@@ -116,6 +115,7 @@ class B2BAuth {
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($curl);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
        
         return $response;
@@ -126,8 +126,8 @@ class B2BAuth {
        
         $url = _url.'/'.'Api/RegisterWithUserDetail';
         $headers = array(
-            "Device: $jwtToken",
-            "Authorization: 'Bearer '$authenticationToken",
+            'Device' => "Device:".$jwtToken,
+            'Authorization' => "Authorization: Bearer ".$authenticationToken
         );
         
         $appUserEmailMobile= array(
@@ -145,6 +145,7 @@ class B2BAuth {
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($curl);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
        
         return $response;
@@ -154,8 +155,8 @@ class B2BAuth {
         
         $url = _url.'/'.'Api/LoginPlus';
         $headers = array(
-            "Device: $jwtToken",
-            "Authorization: 'Bearer '$authenticationToken",
+            'Device' => "Device:".$jwtToken,
+            'Authorization' => "Authorization: Bearer ".$authenticationToken
         );
         
         $loginEmailPassword = array(
@@ -172,6 +173,7 @@ class B2BAuth {
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($curl);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
        
         return $response;

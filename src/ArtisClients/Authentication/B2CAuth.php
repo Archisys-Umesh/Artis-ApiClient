@@ -29,7 +29,7 @@ class B2CAuth {
         $getToken = explode("Token", $getResult[1]);
         $authenticationToken = str_replace(array('}', ':', '"' ), array('', '', ''), $getToken[1]);
         
-        $loginWithOTP = self::loginOtpValidate($jwtToken,$authenticationToken,$isdCode,$mobile,'152535');
+        $loginWithOTP = self::loginWithOTP($jwtToken,$authenticationToken,$isdCode,$mobile);
         //$registerWithUserDetail = self::registerWithUserDetail($jwtToken,$authenticationToken,$name,$email,$isdCode,$mobile,$sapNo);
         
         //$validateEmailMobile = self::validateEmailMobile($jwtToken,$authenticationToken,$email, $isdCode, $mobile);
@@ -69,11 +69,9 @@ class B2CAuth {
     public static function appFirstStart($jwtDeviceToken) {
         
         $url = _url.'/'.'Api/AppFirstStart';
-        $headerToken = $jwtDeviceToken;
-       
         
         $headers = array(
-            "Device: $headerToken",
+            'Device' => "Device:".$jwtDeviceToken
         );
         
         $curl = curl_init($url);
@@ -84,6 +82,7 @@ class B2CAuth {
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($curl);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
        
         return $response;
@@ -93,8 +92,8 @@ class B2CAuth {
         
         $url = _url.'/'.'Api/RegisterWithUserDetail';
         $headers = array(
-            "Device: $jwtToken",
-            "Authorization: Bearer $authenticationToken",
+            'Device' => "Device:".$jwtToken,
+            'Authorization' => "Authorization: Bearer ".$authenticationToken
         );
         
         $appUserDetais = array(
@@ -118,6 +117,7 @@ class B2CAuth {
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($curl);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
        
         return $response;
@@ -128,8 +128,8 @@ class B2CAuth {
        
         $url = _url.'/'.'Api/RegisterWithUserDetail';
         $headers = array(
-            "Device: $jwtToken",
-            "Authorization: Bearer $authenticationToken",
+            'Device' => "Device:".$jwtToken,
+            'Authorization' => "Authorization: Bearer ".$authenticationToken
         );
         
         $appUserEmailMobile= array(
@@ -147,6 +147,7 @@ class B2CAuth {
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($curl);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
        
         return $response;
@@ -156,41 +157,13 @@ class B2CAuth {
         
         $url = _url.'/'.'Api/Login';
         $headers = array(
-            "Device: $jwtToken",
-            "Authorization: Bearer $authenticationToken",
-        );
-        
-        $loginEmailPassword = array(
-            'isdCode' => $isdCode,
-            'mobile' => $mobile
-        );
-       
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_HEADER, false);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($loginEmailPassword));
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($curl);
-        curl_close($curl);
-        
-        return $response;
-    }
-    
-    public static function loginOtpValidate($jwtToken, $authenticationToken, $isdCode, $mobile, $otp){
-        
-        $url = _url.'/'.'Api/Validate';
-        $headers = array(
-            "Device: $jwtToken",
-            "Authorization: Bearer $authenticationToken",
+            'Device' => "Device:".$jwtToken,
+            'Authorization' => "Authorization: Bearer ".$authenticationToken
         );
         
         $loginWithOTP = array(
             'isdCode' => $isdCode,
-            'mobile' => $mobile,
-            'code' => $otp
+            'mobile' => $mobile
         );
        
         $curl = curl_init($url);
@@ -202,8 +175,40 @@ class B2CAuth {
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($curl);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
         
         return $response;
     }
+    
+    public static function loginOtpValidate($jwtToken, $authenticationToken, $isdCode, $mobile, $otp){
+        
+        $url = _url.'/'.'Api/Validate';
+        $headers = array(
+            'Device' => "Device:".$jwtToken,
+            'Authorization' => "Authorization: Bearer ".$authenticationToken
+        );
+        
+        $loginWithOTPValidate = array(
+            'isdCode' => $isdCode,
+            'mobile' => $mobile,
+            'code' => $otp
+        );
+       
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($loginWithOTPValidate));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($curl);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+        
+        return $response;
+    }
+    
+    
 }
