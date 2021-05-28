@@ -16,7 +16,7 @@ use Ramsey\Uuid\Uuid;
  */
 class JwtToken {
     
-    public static function createJwtToken(){
+    public static function token(){
         
         $issuedAt = time();
         $expire = $issuedAt + 3600;
@@ -26,7 +26,7 @@ class JwtToken {
             'exp' => $expire,
             'appversion' => "1.0.0",
             'appversioncode' => "1",
-            'aud' => ["com.archisys".'.'._aud],
+            'aud' => ["com.vratha.maaooris"],
             'id' => Uuid::uuid4(),
             'iss' => "com.archisys.artis",
             'manufacturer' => "Archisys",
@@ -36,7 +36,7 @@ class JwtToken {
             'osversion' => "18.04",
             'platform' => "PHP Web"
         ];
-        $secretKey = (_jwtSecretKey);
+        $secretKey = "2C39927D43F04E1CBAB1615841D94000";
 
         $jwtToken = JWT::encode(
                         $data,
