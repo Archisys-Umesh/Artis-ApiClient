@@ -13,6 +13,7 @@ namespace Archisys\ArtisApiClient\Models;
  */
 class Address {
     
+    
     private $id;
     private $name;
     private $namePrefix;
@@ -30,6 +31,32 @@ class Address {
     private $isActive;
     private $segments;
     
+    /**
+     * @var BusinessCustomerAddressMapping
+     */
+    public $businessCustomerAddressMapping;
+    
+    /**
+     * @var BusinessLocation
+     */
+    public $businessLocation;
+    
+    function getBusinessCustomerAddressMapping(): BusinessCustomerAddressMapping {
+        return $this->businessCustomerAddressMapping;
+    }
+
+    function getBusinessLocation(): BusinessLocation {
+        return $this->businessLocation;
+    }
+
+    function setBusinessCustomerAddressMapping(BusinessCustomerAddressMapping $businessCustomerAddressMapping): void {
+        $this->businessCustomerAddressMapping = $businessCustomerAddressMapping;
+    }
+
+    function setBusinessLocation(BusinessLocation $businessLocation): void {
+        $this->businessLocation = $businessLocation;
+    }
+
     function getId() {
         return $this->id;
     }
