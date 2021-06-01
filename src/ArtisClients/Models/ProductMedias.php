@@ -9,49 +9,30 @@
 namespace Archisys\ArtisApiClient\Models;
 
 /**
- * Description of ProductAttributeGroups
+ * Description of ProductMedias
  *
  * @author Uday
  */
-class ProductAttributeGroups {
+class ProductMedias {
     
-    private $id;
-    private $groupName;
-    private $displayOrder;
     private $productId;
+    private $mediaId;
+    private $displayOrder;
     private $updatedBy;
     private $createdBy;
     private $createdOn;
     private $updatedOn;
     
-    /**
-     * @var ProductAttributes
-     */
-    public $productAttributes;
-    
-    function getProductAttributes(): ProductAttributes {
-        return $this->productAttributes;
+    function getProductId() {
+        return $this->productId;
     }
 
-    function setProductAttributes(ProductAttributes $productAttributes): void {
-        $this->productAttributes = $productAttributes;
-    }
-
-        
-    function getId() {
-        return $this->id;
-    }
-
-    function getGroupName() {
-        return $this->groupName;
+    function getMediaId() {
+        return $this->mediaId;
     }
 
     function getDisplayOrder() {
         return $this->displayOrder;
-    }
-
-    function getProductId() {
-        return $this->productId;
     }
 
     function getUpdatedBy() {
@@ -70,20 +51,16 @@ class ProductAttributeGroups {
         return $this->updatedOn;
     }
 
-    function setId($id): void {
-        $this->id = $id;
+    function setProductId($productId): void {
+        $this->productId = $productId;
     }
 
-    function setGroupName($groupName): void {
-        $this->groupName = $groupName;
+    function setMediaId($mediaId): void {
+        $this->mediaId = $mediaId;
     }
 
     function setDisplayOrder($displayOrder): void {
         $this->displayOrder = $displayOrder;
-    }
-
-    function setProductId($productId): void {
-        $this->productId = $productId;
     }
 
     function setUpdatedBy($updatedBy): void {

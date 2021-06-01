@@ -9,49 +9,40 @@
 namespace Archisys\ArtisApiClient\Models;
 
 /**
- * Description of ProductAttributeGroups
+ * Description of ProductDetails
  *
  * @author Uday
  */
-class ProductAttributeGroups {
+class ProductDetails {
     
-    private $id;
-    private $groupName;
-    private $displayOrder;
     private $productId;
+    private $language;
+    private $name;
+    private $summary;
+    private $description;
     private $updatedBy;
     private $createdBy;
     private $createdOn;
     private $updatedOn;
     
-    /**
-     * @var ProductAttributes
-     */
-    public $productAttributes;
-    
-    function getProductAttributes(): ProductAttributes {
-        return $this->productAttributes;
-    }
-
-    function setProductAttributes(ProductAttributes $productAttributes): void {
-        $this->productAttributes = $productAttributes;
-    }
-
-        
-    function getId() {
-        return $this->id;
-    }
-
-    function getGroupName() {
-        return $this->groupName;
-    }
-
-    function getDisplayOrder() {
-        return $this->displayOrder;
-    }
-
     function getProductId() {
         return $this->productId;
+    }
+
+    function getLanguage() {
+        return $this->language;
+    }
+
+    function getName() {
+        return $this->name;
+    }
+
+    function getSummary() {
+        return $this->summary;
+    }
+
+    function getDescription() {
+        return $this->description;
     }
 
     function getUpdatedBy() {
@@ -70,20 +61,24 @@ class ProductAttributeGroups {
         return $this->updatedOn;
     }
 
-    function setId($id): void {
-        $this->id = $id;
-    }
-
-    function setGroupName($groupName): void {
-        $this->groupName = $groupName;
-    }
-
-    function setDisplayOrder($displayOrder): void {
-        $this->displayOrder = $displayOrder;
-    }
-
     function setProductId($productId): void {
         $this->productId = $productId;
+    }
+
+    function setLanguage($language): void {
+        $this->language = $language;
+    }
+
+    function setName($name): void {
+        $this->name = $name;
+    }
+
+    function setSummary($summary): void {
+        $this->summary = $summary;
+    }
+
+    function setDescription($description): void {
+        $this->description = $description;
     }
 
     function setUpdatedBy($updatedBy): void {
